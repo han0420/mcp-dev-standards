@@ -71,7 +71,7 @@ const extractPathInfo = (
   }
 
   // 获取文件名（不含扩展名）
-  const filename = parts[parts.length - 1]?.replace(/\.md$/i, '') || 'unknown'
+  const filename = parts[parts.length - 1]?.replace(/\.(md|txt|markdown)$/i, '').replace(/[?#].*$/, '') || 'unknown'
 
   // 提取分类和子分类
   const category = parts[0] || 'custom'
@@ -86,10 +86,21 @@ const extractPathInfo = (
  */
 const generateId = (filePath: string): string => {
   const normalizedPath = filePath.replace(/\\/g, '/')
-  const cleanPath = normalizedPath
+  
+  // 如果是 URL，提取路径部分
+  let cleanPath = normalizedPath
+  try {
+    const url = new URL(normalizedPath)
+    cleanPath = url.pathname
+  } catch {
+    // 不是 URL，继续处理
+  }
+  
+  cleanPath = cleanPath
     .replace(/^\.?\//, '')
     .replace(/^standards\//, '')
-    .replace(/\.md$/i, '')
+    .replace(/\.(md|txt|markdown)$/i, '')
+    .replace(/[?#].*$/, '') // 移除查询参数和锚点
 
   // 将路径转换为 ID 格式（使用连字符）
   return cleanPath.replace(/\//g, '-').toLowerCase()

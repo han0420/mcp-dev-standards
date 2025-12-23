@@ -65,8 +65,8 @@ export class RemoteSource implements DocumentSource {
       return documents
     }
 
-    // 模式 2：检查 URL 是否直接指向 Markdown 文件
-    if (this.isMarkdownUrl(this.url)) {
+    // 模式 2：检查 URL 是否直接指向文档文件
+    if (this.isDocumentUrl(this.url)) {
       const doc = await this.loadMarkdownFile({ url: this.url })
       if (doc) {
         documents.push(doc)
@@ -79,11 +79,23 @@ export class RemoteSource implements DocumentSource {
   }
 
   /**
-   * 检查 URL 是否指向 Markdown 文件
+   * 检查 URL 是否指向文档文件（Markdown 或文本）
    */
-  private isMarkdownUrl(url: string): boolean {
-    const lowerUrl = url.toLowerCase()
-    return lowerUrl.endsWith('.md') || lowerUrl.endsWith('.markdown')
+  private isDocumentUrl(url: string): boolean {
+    try {
+      // 移除查询参数后检查扩展名
+      const urlObj = new URL(url)
+      const pathname = urlObj.pathname.toLowerCase()
+      return (
+        pathname.endsWith('.md') || 
+        pathname.endsWith('.markdown') ||
+        pathname.endsWith('.txt') ||
+        pathname.includes('llms.txt')  // 支持 context7 格式
+      )
+    } catch {
+      const lowerUrl = url.toLowerCase()
+      return lowerUrl.endsWith('.md') || lowerUrl.endsWith('.markdown') || lowerUrl.endsWith('.txt')
+    }
   }
 
   /**
