@@ -6,6 +6,17 @@
     {
       "type": "local",
       "path": "./standards"
+    },
+    {
+      "type": "remote",
+      "url": "https://context7.com",
+      "docs": [
+        {
+          "url": "https://context7.com/vercel/next.js/llms.txt?tokens=10000",
+          "category": "frontend",
+          "subcategory": "nextjs"
+        }
+      ]
     }
   ],
   "categories": [
