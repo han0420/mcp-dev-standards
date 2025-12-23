@@ -1,0 +1,37 @@
+# 项目开发规范
+
+本项目使用 MCP Dev Standards 工具管理开发规范。
+
+## AI 编码助手指南
+
+在编写或修改代码时，请遵循以下流程：
+
+### 1. 获取规范
+
+编写代码前，请先获取相关的开发规范：
+
+- **Vue 组件**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-vue-components`
+- **Vue Composables**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-vue-composables`
+- **React 组件**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-react-components`
+- **React Hooks**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-react-hooks`
+- **Tailwind CSS**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-styles-tailwind`
+- **RESTful API**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `backend-api-restful`
+- **API 错误处理**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `backend-api-error-handling`
+- **数据库命名**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `backend-database-naming`
+
+### 2. 搜索规范
+
+如果不确定使用哪个规范，可以先搜索：
+- 调用 `mcp_dev-standards_resolve-standard-id`，query 为相关关键词
+
+### 3. 编码要求
+
+- 所有代码必须符合获取到的规范要求
+- 命名规范必须严格遵守
+- 代码结构必须按照规范模板
+
+### 4. 代码注释
+
+- 注释使用中文
+- 复杂逻辑必须添加注释说明
+

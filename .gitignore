@@ -31,3 +31,6 @@ coverage/
 .cache/
 *.tsbuildinfo
 
+.npmrc
+.cursorrules
+PUBLISH.md
