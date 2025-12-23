@@ -43,7 +43,7 @@ export class StandardsManager {
           this.sources.push(new LocalSource(sourceConfig.path))
           break
         case 'remote':
-          this.sources.push(new RemoteSource(sourceConfig.url, sourceConfig.headers))
+          this.sources.push(new RemoteSource(sourceConfig.url, sourceConfig.headers, sourceConfig.docs))
           break
         case 'git':
           this.sources.push(

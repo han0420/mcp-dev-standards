@@ -10,11 +10,24 @@ export const LocalSourceSchema = z.object({
   path: z.string(),
 })
 
+// 远程文档配置
+export const RemoteDocSchema = z.object({
+  url: z.string().url(),
+  category: z.string().optional(),
+  subcategory: z.string().optional(),
+})
+export type RemoteDoc = z.infer<typeof RemoteDocSchema>
+
 // 远程 API 来源配置
+// 支持三种模式：
+// 1. url 指向 JSON API，返回文档列表
+// 2. url 直接指向 .md 文件
+// 3. docs 数组配置多个远程 Markdown 文件
 export const RemoteSourceSchema = z.object({
   type: z.literal('remote'),
   url: z.string().url(),
   headers: z.record(z.string()).optional(),
+  docs: z.array(RemoteDocSchema).optional(), // 多个远程 Markdown 文件
 })
 
 // Git 仓库来源配置

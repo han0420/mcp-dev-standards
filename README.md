@@ -168,7 +168,52 @@ AI: [调用 resolve-standard-id, query="Vue 组件"]
 }
 ```
 
-#### 远程 API
+#### 远程文档
+
+远程文档来源支持三种模式：
+
+**模式 1：直接指向 Markdown 文件**
+
+```json
+{
+  "type": "remote",
+  "url": "https://example.com/docs/vue3.md",
+  "headers": {
+    "Authorization": "Bearer token"
+  }
+}
+```
+
+**模式 2：配置多个远程 Markdown 文件**
+
+```json
+{
+  "type": "remote",
+  "url": "https://example.com/docs",
+  "headers": {
+    "Authorization": "Bearer token"
+  },
+  "docs": [
+    {
+      "url": "https://example.com/docs/vue3.md",
+      "category": "frontend",
+      "subcategory": "vue"
+    },
+    {
+      "url": "https://example.com/docs/react.md",
+      "category": "frontend",
+      "subcategory": "react"
+    },
+    {
+      "url": "https://intranet.company.com/standards/api.md",
+      "category": "backend",
+      "subcategory": "api"
+    }
+  ]
+}
+```
+
+**模式 3：JSON API 返回文档列表**
 
 ```json
 {
@@ -177,6 +222,21 @@ AI: [调用 resolve-standard-id, query="Vue 组件"]
   "headers": {
     "Authorization": "Bearer token"
   }
+}
+```
+
+API 应返回以下格式：
+
+```json
+{
+  "standards": [
+    {
+      "id": "vue-components",
+      "title": "Vue 组件规范",
+      "category": "frontend",
+      "content": "# Vue 组件规范\n..."
+    }
+  ]
 }
 ```
 
