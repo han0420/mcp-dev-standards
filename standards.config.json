@@ -1,0 +1,24 @@
+{
+  "$schema": "https://mcp-dev-standards.example.com/schema/standards.json",
+  "projectTitle": "开发规范中心",
+  "description": "前后端开发规范文档，帮助 AI 生成符合团队标准的代码",
+  "sources": [
+    {
+      "type": "local",
+      "path": "./standards"
+    }
+  ],
+  "categories": [
+    "frontend",
+    "backend",
+    "custom"
+  ],
+  "cacheTimeout": 3600,
+  "rules": [
+    "使用 TypeScript 进行类型安全的开发",
+    "遵循团队的命名规范",
+    "编写清晰的注释和文档",
+    "实施适当的错误处理"
+  ]
+}
+

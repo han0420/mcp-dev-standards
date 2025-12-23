@@ -1,0 +1,50 @@
+{
+  "name": "mcp-dev-standards",
+  "version": "1.0.0",
+  "description": "MCP 服务器 - 为 AI 编程助手提供前后端开发规范上下文",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-dev-standards": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src --ext .ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "coding-standards",
+    "development-standards",
+    "cursor",
+    "claude"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "gray-matter": "^4.0.3",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "files": [
+    "dist",
+    "standards",
+    "README.md"
+  ]
+}
+
