@@ -16,6 +16,95 @@ lastUpdated: "2024-12-23"
 
 Vue.js 是一个渐进式 JavaScript 框架，以其易用性、灵活性和高性能著称。本规范基于 Vue 2.x 官方文档整理，适用于使用 Options API 的项目。
 
+## ⚠️ AI 代码生成强制要求
+
+### 单文件行数限制
+
+**Vue 单文件组件（SFC）不得超过 600 行代码。** 这是强制性要求。
+
+如果组件逻辑复杂，必须进行拆分：
+
+| 场景 | 拆分方式 |
+|------|----------|
+| 组件过大 | 拆分为多个子组件 |
+| 逻辑复杂 | 提取 Mixins |
+| 工具函数 | 提取到 utils 目录 |
+| API 调用 | 提取到 api 目录 |
+| 常量定义 | 提取到 constants 目录 |
+
+### 强制组件化
+
+**必须遵循组件化开发原则：**
+
+1. **单一职责**: 每个组件只负责一个功能
+2. **可复用性**: 通用组件必须提取到 components 目录
+3. **组件粒度**: 超过 200 行的组件考虑拆分
+4. **目录结构**: 复杂组件使用文件夹组织
+
+```
+components/
+├── UserList/
+│   ├── index.vue          # 主组件（入口）
+│   ├── UserListItem.vue   # 列表项子组件
+│   ├── UserListHeader.vue # 头部子组件
+│   ├── UserListFilter.vue # 筛选子组件
+│   └── mixins/
+│       └── userListMixin.js # 组件 Mixin
+```
+
+### Mixins 复用规范
+
+Vue 2 使用 Mixins 进行逻辑复用：
+
+```javascript
+// mixins/tableMixin.js
+export default {
+  data() {
+    return {
+      tableData: [],
+      loading: false,
+      pagination: {
+        page: 1,
+        pageSize: 20,
+        total: 0
+      }
+    }
+  },
+  
+  methods: {
+    async fetchData() {
+      this.loading = true
+      try {
+        const { list, total } = await this.fetchApi(this.pagination)
+        this.tableData = list
+        this.pagination.total = total
+      } finally {
+        this.loading = false
+      }
+    },
+    
+    handlePageChange(page) {
+      this.pagination.page = page
+      this.fetchData()
+    }
+  }
+}
+
+// 组件中使用
+import tableMixin from '@/mixins/tableMixin'
+
+export default {
+  mixins: [tableMixin],
+  
+  methods: {
+    // 实现 fetchApi 方法
+    fetchApi(params) {
+      return api.getUserList(params)
+    }
+  }
+}
+```
+
 ## 1. 组件定义规范
 
 ### 1.1 单文件组件结构

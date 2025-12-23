@@ -16,6 +16,228 @@ lastUpdated: "2024-12-23"
 
 Vue 3 是一个渐进式 JavaScript 框架，用于构建用户界面。本规范基于 Vue 3 官方文档整理，重点介绍 Composition API 的使用规范。
 
+## ⚠️ AI 代码生成强制要求
+
+### 单文件行数限制
+
+**Vue 单文件组件（SFC）不得超过 600 行代码。** 这是强制性要求。
+
+如果组件逻辑复杂，必须进行拆分：
+
+| 场景 | 拆分方式 |
+|------|----------|
+| 组件过大 | 拆分为多个子组件 |
+| 逻辑复杂 | **提取 Composables (Hooks)** |
+| 工具函数 | 提取到 utils 目录 |
+| API 调用 | 提取到 api 目录 |
+| 类型定义 | 提取到 types 目录 |
+| 常量定义 | 提取到 constants 目录 |
+
+### 强制组件化
+
+**必须遵循组件化开发原则：**
+
+1. **单一职责**: 每个组件只负责一个功能
+2. **可复用性**: 通用组件必须提取到 components 目录
+3. **组件粒度**: 超过 200 行的组件考虑拆分
+4. **目录结构**: 复杂组件使用文件夹组织
+
+```
+components/
+├── UserList/
+│   ├── index.vue          # 主组件（入口）
+│   ├── UserListItem.vue   # 列表项子组件
+│   ├── UserListHeader.vue # 头部子组件
+│   ├── UserListFilter.vue # 筛选子组件
+│   └── composables/
+│       ├── useUserList.ts     # 列表数据管理
+│       ├── useUserFilter.ts   # 筛选逻辑
+│       └── useUserActions.ts  # 用户操作
+```
+
+### 强制使用 Composables (Hooks) 管理逻辑
+
+**Vue 3 必须使用 Composables 进行逻辑复用和状态管理。** 这是强制性要求。
+
+#### Composable 命名规范
+
+- 必须使用 `use` 前缀
+- 使用 camelCase 命名
+- 文件名与函数名一致
+
+```typescript
+// ✅ 正确命名
+useUser.ts      -> export function useUser() {}
+useAuth.ts      -> export function useAuth() {}
+useTable.ts     -> export function useTable() {}
+
+// ❌ 错误命名
+user.ts         -> export function user() {}
+UserHook.ts     -> export function UserHook() {}
+```
+
+#### Composable 结构规范
+
+```typescript
+// composables/useTable.ts
+import { ref, reactive, computed } from 'vue'
+import type { Ref } from 'vue'
+
+/**
+ * 表格数据管理 Composable
+ * 
+ * @description 封装表格的数据获取、分页、筛选等通用逻辑
+ * @template T - 表格数据类型
+ * @param fetchApi - 数据获取函数
+ * @returns 表格状态和操作方法
+ */
+export function useTable<T>(
+  fetchApi: (params: TableParams) => Promise<TableResponse<T>>
+) {
+  // ========== 响应式状态 ==========
+  
+  /** 表格数据 */
+  const tableData: Ref<T[]> = ref([])
+  
+  /** 加载状态 */
+  const loading = ref(false)
+  
+  /** 分页配置 */
+  const pagination = reactive({
+    page: 1,
+    pageSize: 20,
+    total: 0
+  })
+  
+  // ========== 计算属性 ==========
+  
+  /** 总页数 */
+  const totalPages = computed(() => 
+    Math.ceil(pagination.total / pagination.pageSize)
+  )
+  
+  // ========== 方法 ==========
+  
+  /**
+   * 获取表格数据
+   */
+  const fetchData = async () => {
+    loading.value = true
+    try {
+      const { list, total } = await fetchApi({
+        page: pagination.page,
+        pageSize: pagination.pageSize
+      })
+      tableData.value = list
+      pagination.total = total
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  /**
+   * 页码变更
+   */
+  const handlePageChange = (page: number) => {
+    pagination.page = page
+    fetchData()
+  }
+  
+  /**
+   * 刷新数据
+   */
+  const refresh = () => {
+    pagination.page = 1
+    fetchData()
+  }
+  
+  // ========== 返回 ==========
+  
+  return {
+    // 状态
+    tableData,
+    loading,
+    pagination,
+    totalPages,
+    
+    // 方法
+    fetchData,
+    handlePageChange,
+    refresh
+  }
+}
+```
+
+#### 组件中使用 Composable
+
+```vue
+<script setup lang="ts">
+/**
+ * @file UserList.vue
+ * @description 用户列表组件，使用 Composables 管理逻辑
+ */
+import { onMounted } from 'vue'
+import { useTable } from './composables/useTable'
+import { useUserFilter } from './composables/useUserFilter'
+import { userApi } from '@/api'
+import type { User } from '@/types'
+
+// 使用表格 Composable
+const {
+  tableData,
+  loading,
+  pagination,
+  fetchData,
+  handlePageChange,
+  refresh
+} = useTable<User>((params) => userApi.getList(params))
+
+// 使用筛选 Composable
+const {
+  filters,
+  handleSearch,
+  handleReset
+} = useUserFilter(refresh)
+
+// 生命周期
+onMounted(() => {
+  fetchData()
+})
+</script>
+
+<template>
+  <!-- 组件保持简洁，只负责 UI 渲染 -->
+  <div class="user-list">
+    <UserListFilter 
+      v-model="filters"
+      @search="handleSearch"
+      @reset="handleReset"
+    />
+    
+    <UserListTable
+      :data="tableData"
+      :loading="loading"
+    />
+    
+    <UserListPagination
+      :pagination="pagination"
+      @change="handlePageChange"
+    />
+  </div>
+</template>
+```
+
+### 何时必须提取 Composable
+
+| 情况 | 是否提取 | 说明 |
+|------|----------|------|
+| 逻辑超过 50 行 | ✅ 必须 | 保持组件简洁 |
+| 逻辑可复用 | ✅ 必须 | 提高复用性 |
+| 涉及 API 调用 | ✅ 必须 | 统一管理请求 |
+| 复杂状态管理 | ✅ 必须 | 便于测试和维护 |
+| 简单 UI 交互 | ❌ 不需要 | 如简单的显示/隐藏 |
+| 单次使用的简单逻辑 | ❌ 不需要 | 避免过度抽象 |
+
 ## 1. 组件定义规范
 
 ### 1.1 Script Setup 语法（推荐）
