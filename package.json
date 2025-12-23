@@ -25,8 +25,16 @@
     "cursor",
     "claude"
   ],
-  "author": "",
+  "author": "han0420",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/han0420/mcp-dev-standards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/han0420/mcp-dev-standards/issues"
+  },
+  "homepage": "https://github.com/han0420/mcp-dev-standards#readme",
   "engines": {
     "node": ">=18.0.0"
   },
