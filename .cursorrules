@@ -2,27 +2,48 @@
 
 本项目使用 MCP Dev Standards 工具管理开发规范。
 
+## ⚠️ 强制要求（最高优先级）
+
+**在生成任何代码之前，必须先获取 AI 代码注释规范：**
+
+```
+调用 mcp_dev-standards_get-standard-docs，standardId 为 custom-ai-code-comments
+```
+
+这是强制性要求，所有 AI 生成的代码都必须遵循此规范中的注释要求。
+
 ## AI 编码助手指南
 
 在编写或修改代码时，请遵循以下流程：
 
-### 1. 获取规范
+### 1. 获取规范（按需获取）
 
-编写代码前，请先获取相关的开发规范：
+编写代码前，根据技术栈获取相关的开发规范：
 
-- **Vue 组件**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-vue-components`
-- **Vue Composables**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-vue-composables`
-- **React 组件**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-react-components`
-- **React Hooks**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-react-hooks`
-- **Tailwind CSS**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `frontend-styles-tailwind`
-- **RESTful API**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `backend-api-restful`
-- **API 错误处理**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `backend-api-error-handling`
-- **数据库命名**: 调用 `mcp_dev-standards_get-standard-docs`，standardId 为 `backend-database-naming`
+**前端规范：**
+- **Vue 组件**: `frontend-vue-components`
+- **Vue Composables**: `frontend-vue-composables`
+- **Vue 2 指南**: `frontend-vue-vue2-guide`
+- **Vue 3 指南**: `frontend-vue-vue3-guide`
+- **React 组件**: `frontend-react-components`
+- **React Hooks**: `frontend-react-hooks`
+- **Tailwind CSS**: `frontend-styles-tailwind`
+- **前端安全**: `frontend-security-code-security`
+- **Vite 配置**: `frontend-build-tools-vite`
+- **Webpack 配置**: `frontend-build-tools-webpack`
+- **Qiankun 微前端**: `frontend-micro-frontend-qiankun`
+
+**后端规范：**
+- **RESTful API**: `backend-api-restful`
+- **API 错误处理**: `backend-api-error-handling`
+- **数据库命名**: `backend-database-naming`
 
 ### 2. 搜索规范
 
 如果不确定使用哪个规范，可以先搜索：
-- 调用 `mcp_dev-standards_resolve-standard-id`，query 为相关关键词
+```
+调用 mcp_dev-standards_resolve-standard-id，query 为相关关键词
+```
 
 ### 3. 编码要求
 
@@ -30,8 +51,34 @@
 - 命名规范必须严格遵守
 - 代码结构必须按照规范模板
 
-### 4. 代码注释
+### 4. 代码注释（强制）
 
-- 注释使用中文
-- 复杂逻辑必须添加注释说明
+**所有 AI 生成的代码必须包含完整的中文注释：**
 
+1. 文件头部必须有 `@file`、`@description` 标签
+2. 所有函数/方法必须有 JSDoc 注释
+3. 所有类型定义必须有属性说明
+4. 复杂逻辑必须有行内注释
+5. 正则表达式必须有解析说明
+
+### 5. 工作流程
+
+```
+1. 首先获取 custom-ai-code-comments 规范（必须）
+2. 根据任务获取相关技术规范（如 Vue/React/API 等）
+3. 按照规范生成代码
+4. 确保代码包含完整注释
+```
+
+## 快捷调用示例
+
+用户可以使用以下提示词格式：
+
+```
+use dev-standards [关键词] [需求描述]
+```
+
+AI 将自动：
+1. 获取 AI 代码注释规范
+2. 搜索并获取相关技术规范
+3. 按规范生成带完整注释的代码
