@@ -1,6 +1,6 @@
 {
   "name": "mcp-dev-standards",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "MCP 服务器 - 为 AI 编程助手提供前后端开发规范上下文",
   "type": "module",
   "main": "dist/index.js",
